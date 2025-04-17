@@ -4,6 +4,8 @@ import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import animalsRoutes from "./routes/animalsRoutes.js";
+
 
 
 const app = express()
@@ -11,6 +13,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/animals", animalsRoutes);
 
 //Get the file path from the URL of the current module
 const __filename = fileURLToPath(import.meta.url)
