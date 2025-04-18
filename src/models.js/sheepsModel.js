@@ -4,40 +4,46 @@ export const getAllSheepHeardsService = async () => {
     const result  = pool.query("SELECT * FROM sheeps");
     return result.rows;
 };
-export const getSheepHeardByOwnerIDService = async (ownerId) => {
-    const ownerCheck = pool.query('SELECT ownerId FROM farmers WHERE ownerId = $1', [ownerId]);
-    if(ownerCheck.rows.length === 0){
-        return res.status(400).json({ message: 'Invalid ownerId: Owner does not exist' }); 
-    }else{
-        const result  = pool.query("SELECT * FROM sheeps WHERE ownerId = $1",[ownerId]);
+export const getSheepHeardByOwnerIDService = async (owner_id) => {
+    try {
+      const ownerCheck = await pool.query('SELECT owner_id FROM sheeps WHERE owner_id = $1', [owner_id]);
+      if (ownerCheck && ownerCheck.rows && ownerCheck.rows.length === 0) {
+        return { status: 400, message: 'Invalid ownerId: Owner does not exist' };
+        // Return here to avoid the next query
+      } else {
+        const result = await pool.query("SELECT * FROM sheeps WHERE owner_id = $1", [owner_id]);
         return result.rows[0];
+      }
+    } catch (error) {
+      console.error("Error in getSheepHeardByOwnerIDService:", error);
+      throw error; // Re-throw the error for the controller to handle
     }
     
 };
-export const addSheepHeardByOwnerIDService = async (id, species, heardid, heardcount) => {
-    const ownerCheck = pool.query('SELECT id FROM sheeps WHERE id = $1', [id]);
+export const addSheepHeardByOwnerIDService = async (owner_id, species, heard_id, heard_count) => {
+    const ownerCheck = pool.query('SELECT owner_id FROM sheeps WHERE owner_id = $1', [owner_id]);
         if(ownerCheck && ownerCheck.rows && ownerCheck.rows.length === 0){
             return res.status(400).json({ message: 'Invalid ownerId: Owner does not exist' }); 
         }else{
-            const result = await pool.query("INSERT INTO sheeps (id, species, heardid, heardcount) VALUES ($1, $2, $3, $4) RETURNING *",[id, species, heardid, heardcount]);
+            const result = await pool.query("INSERT INTO sheeps (owner_id, species, heard_id, heard_count) VALUES ($1, $2, $3, $4) RETURNING *",[owner_id, species, heard_id, heard_count]);
             return result.rows[0];
         }
 };
-export const updateSheepHeardByOwnerIDService = async (ownerId, heardCount) => {
-    const ownerCheck = pool.query('SELECT ownerId FROM farmers WHERE ownerId = $1', [ownerId]);
-    if(ownerCheck.rows.length === 0){
+export const updateSheepHeardByOwnerIDService = async (owner_id,heard_id, heard_count) => {
+    const ownerCheck = pool.query('SELECT id FROM farmers WHERE id = $1', [id]);
+    if(ownerCheck && ownerCheck.rows && ownerCheck.rows.length === 0){
         return res.status(400).json({ message: 'Invalid ownerId: Owner does not exist' }); 
     }else{
-        const result  = await pool.query("UPDATE sheeps SET heardCount = $1 WHERE ownerId = $3 RETURNING *",[heardCount, ownerId]);
+        const result  = await pool.query("UPDATE sheeps SET heard_count = $2 OR heard_id = $3 WHERE id = $4 RETURNING *",[heard_count,heard_id, owner_id]);
         return result.rows[0];
     }
 };
-export const deleteSheepHeardByOwnerIDService = async (ownerId) => {
-    const ownerCheck = pool.query('SELECT ownerId FROM farmers WHERE ownerId = $1', [ownerId]);
+export const deleteSheepHeardByOwnerIDService = async (owner_id) => {
+    const ownerCheck = pool.query('SELECT owner_id FROM farmers WHERE owner_id = $1', [owner_id]);
     if(ownerCheck.rows.length === 0){
         return res.status(400).json({ message: 'Invalid ownerId: Owner does not exist' }); 
     }else{
-        const result = await pool.query("DELETE FROM sheeps WHERE ownerId  = $1 RETURNING *",[ownerId]);
+        const result = await pool.query("DELETE FROM sheeps WHERE owner_id  = $1 RETURNING *",[owner_id]);
         return result.rows[0];
     }
 };
