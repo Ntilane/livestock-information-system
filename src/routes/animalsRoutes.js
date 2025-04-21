@@ -1,6 +1,6 @@
 import express from "express";
 import roleMiddleware from "../middleware/roleMiddleware.js";
-import {createHeardSheeps,getHeardSheeps, updateSheepInfoById} from "../controllers/animalController.js";
+import {createHeardSheeps,getHeardSheeps, updateSheepInfoById, deleteSheepInfoById} from "../controllers/animalController.js";
 
 const router = express.Router();
 
@@ -8,8 +8,8 @@ const router = express.Router();
 router.post("/addsheeps", createHeardSheeps);
 router.get("/getSheeps/:owner_id", getHeardSheeps);
 
-router.put("/updateSheeps:id", updateSheepInfoById);
-//router.delete("/deleteGoat:id", roleMiddleware(['admin'], animalController));
+router.put("/updateSheeps/:owner_id", updateSheepInfoById);
+router.delete("/deleteSheeps/:id", deleteSheepInfoById);
 
 // Sheeps
 //router.post("/addSheep", roleMiddleware(['admin']), animalController);

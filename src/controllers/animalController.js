@@ -1,5 +1,5 @@
 import pool  from "../db.js";
-import { addSheepHeardByOwnerIDService, getSheepHeardByOwnerIDService, updateSheepHeardByOwnerIDService } from "../models.js/sheepsModel.js";
+import { addSheepHeardByOwnerIDService, deleteSheepHeardByOwnerIDService, getSheepHeardByOwnerIDService, updateSheepHeardByOwnerIDService } from "../models.js/sheepsModel.js";
 
 const createHeardSheeps = async (req, res) => {
         const {owner_id, species, heard_id, heard_count } = req.body;
@@ -35,12 +35,34 @@ const getHeardSheeps = async (req, res) => {
 };
 
 const updateSheepInfoById = async (req, res) => {
-    const {species, heardid, heardcount} = req.body;
+    const {species, heard_id, heard_count} = req.body;
     try {
-        const heard = await updateSheepHeardByOwnerIDService(req.params.id, species, heardid, heardcount);
-        if(!heard) return res.status(404).json({message: 'No owner associated with the entered id'})
+        const heard = await updateSheepHeardByOwnerIDService(req.params.owner_id, heard_id, heard_count);
+        if(!heard){return res.status(404).json({message: 'No owner associated with the entered id'})}else{
+            return res.status(200).json({message: 'Herd updated successfully...', heard: heard})
+        }
     } catch (error) {
         res.status(500).json({ message: 'Failed to update sheeps', error: error.message });    
     }
 };
-export  {createHeardSheeps, getHeardSheeps, updateSheepInfoById};
+const deleteSheepInfoById = async (req, res) => {
+    try {
+      const deletedSheep = await deleteSheepHeardByOwnerIDService(req.params.id); // Await the service function
+  
+      if (deletedSheep?.status === 400) {
+        return res.status(400).json({ message: 'Invalid ownerId: Owner does not exist' });
+      }
+  
+      if (deletedSheep) {
+        return res.status(200).json({
+          message: `Herd associated with owner_id ${req.params.owner_id} deleted`,
+          deletedSheep: deletedSheep, // Send back the deleted sheep data
+        });
+      } else {
+         return res.status(404).json({ message: `Herd associated with owner_id ${req.params.owner_id} not found` });
+      }
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to delete sheeps', error: error.message });
+    }
+  };
+export  {createHeardSheeps, getHeardSheeps, updateSheepInfoById, deleteSheepInfoById};
