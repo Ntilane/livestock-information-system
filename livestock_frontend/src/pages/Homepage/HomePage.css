@@ -1,0 +1,55 @@
+/* HomePage.css */
+
+.home-container {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 2rem;
+    text-align: center;
+    background-color: #f4f6f8;
+    min-height: 100vh;
+  }
+  
+  header {
+    background-color: #4caf50;
+    color: white;
+    padding: 2rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+  }
+  
+  header h1 {
+    margin-bottom: 0.5rem;
+  }
+  
+  main section {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  main ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  main li {
+    margin: 0.5rem 0;
+  }
+  
+  a {
+    color: #4caf50;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  footer {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
