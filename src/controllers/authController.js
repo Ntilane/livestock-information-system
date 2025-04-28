@@ -5,39 +5,40 @@ import jwt from 'jsonwebtoken';
 const HASH_SALT_ROUNDS = 10;
 
 const register = async (req, res) => {
-  const { username, password, role } = req.body;
+  const { username, password, national_id } = req.body;
 
-  if (!username || !password) {
-    return res.status(400).json({ message: 'Username and password are required' });
+  if (!username || !password || !national_id) {
+    return res.status(400).json({ message: 'Username, password, and national ID are required.' });
   }
 
   try {
-    // Use pool.query() to check for an existing user
-    const result = await pool.query('SELECT * FROM farmers WHERE username = $1', [username]);
-    const existingUser = result.rows[0]; // Access the first row of the result
+    const usernameCheck = await pool.query('SELECT * FROM farmers WHERE username = $1', [username]);
+    if (usernameCheck.rows.length > 0) {
+      return res.status(400).json({ message: 'Username already exists.' });
+    }
 
-    if (existingUser) {
-      return res.status(400).json({ message: 'Username already exists' });
+    const idCheck = await pool.query('SELECT * FROM farmers WHERE national_id = $1', [national_id]);
+    if (idCheck.rows.length > 0) {
+      return res.status(400).json({ message: 'National ID already registered.' });
     }
 
     const hashedPassword = await bcrypt.hash(password, HASH_SALT_ROUNDS);
 
-    // Use pool.query() to insert the new user
     const insertResult = await pool.query(
-      'INSERT INTO farmers (username, password, role) VALUES ($1, $2, $3) RETURNING *',
-      [username, hashedPassword, role]
+      'INSERT INTO farmers (username, password, role, national_id) VALUES ($1, $2, $3, $4) RETURNING *',
+      [username, hashedPassword, 'user', national_id] // role is always 'user'
     );
 
     const newUser = insertResult.rows[0];
-    res.status(201).json({ message: 'User registered', user: newUser });
+    res.status(201).json({ message: 'User registered successfully.', user: newUser });
 
   } catch (error) {
     console.error("Registration Error", error);
-    res.status(500).json({ message: 'Something went wrong...' });
+    res.status(500).json({ message: 'Something went wrong during registration.' });
   }
 };
 
-// ... (your login function - ensure it uses result.rows[0] as well)
+
 
 const login = async (req, res) => {
     const { username, password } = req.body;
@@ -61,7 +62,7 @@ const login = async (req, res) => {
         }
 
         const token = jwt.sign(
-            { userId: user.id, username: user.username, role: user.role },
+            { userId: user.national_id, username: user.username, role: user.role },
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
