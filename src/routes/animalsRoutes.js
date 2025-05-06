@@ -6,9 +6,8 @@ const router = express.Router();
 
 // Goats
 router.post("/addsheeps", createHeardSheeps);
-router.get("/getSheeps/:owner_id", getHeardSheeps);
-
-router.put("/updateSheeps/:owner_id", updateSheepInfoById);
+router.get("/getSheeps/:national_id", getHeardSheeps);
+router.put("/updateSheeps/:national_id", updateSheepInfoById);
 router.delete("/deleteSheeps/:id", deleteSheepInfoById);
 
 // Sheeps

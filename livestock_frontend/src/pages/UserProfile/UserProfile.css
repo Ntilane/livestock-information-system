@@ -1,0 +1,34 @@
+.user-profile-container {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
+
+.profile-info {
+  margin-bottom: 20px;
+  background-color: #f3f3f3;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.livestock-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.livestock-table th,
+.livestock-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.livestock-table th {
+  background-color: #45a049;
+  color: white;
+}
+
+.livestock-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}

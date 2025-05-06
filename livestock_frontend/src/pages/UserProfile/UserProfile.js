@@ -1,41 +1,73 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import './style.css';
+import React, { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import "./UserProfile.css";
 
 const UserProfile = () => {
-  const [herds, setHerds] = useState([]);
-  const [error, setError] = useState('');
+  const [user, setUser] = useState(null);
+  const [livestock, setLivestock] = useState([]);
 
   useEffect(() => {
-    const fetchHerds = async () => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) return;
+
+      const decoded = jwtDecode(token);
+      console.log("Decoded user ID:", decoded.userId); // debug
+      setUser(decoded);
+
       try {
-        const token = localStorage.getItem('token');
-        const user = JSON.parse(atob(token.split('.')[1])); // Decoding token for user id
-        const res = await axios.get(`http://127.0.0.1:8000/api/animals/getSheeps/${user.userId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setHerds(res.data);
-      } catch (err) {
-        setError('Failed to load your livestock information.');
+        const res = await fetch(`http://localhost:8000/api/animals/getSheeps/${decoded.userId}`);
+        const data = await res.json();
+        setLivestock(data.heard ? [data.heard] : []);
+        console.log("Livestock fetch response:", data); // debug
+
+      } catch (error) {
+        console.error("Error fetching livestock", error);
       }
     };
 
-    fetchHerds();
+    fetchUser();
   }, []);
 
   return (
-    <div className="profile-container">
-      <h2>Your Herds</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <ul>
-        {herds.map((herd) => (
-          <li key={herd.herd_id}>
-            <strong>Species:</strong> {herd.species} <br />
-            <strong>Herd Count:</strong> {herd.herd_count} <br />
-            <strong>Herd ID:</strong> {herd.herd_id}
-          </li>
-        ))}
-      </ul>
+    <div className="user-profile-container">
+      <h2>User Profile</h2>
+      {user && (
+        <div className="profile-info">
+          <p><strong>Username:</strong> {user.username}</p>
+          <p><strong>ID:</strong> {user.userId}</p>
+        </div>
+      )}
+
+      <h3>Your Registered Livestock</h3>
+      {livestock.length === 0 ? (
+        <p>No livestock records found.</p>
+      ) : (
+        <table className="livestock-table">
+          <thead>
+            <tr>
+              <th>ID ea {user.username}</th>
+              <th>Letsoao</th>
+              <th>Mofuta oa Phoofolo</th>
+              <th>Palo</th>
+            
+            </tr>
+          </thead>
+
+          <tbody>
+            {livestock.map((sheep) => (
+              <tr key={sheep.sheep_id}>
+                <td>{sheep.owner_national_id}</td>
+                <td>{sheep.heard_id}</td>
+                <td>{sheep.species}</td>
+                <td>{sheep.heard_count}</td>
+              </tr>
+            ))}
+          </tbody>
+
+        </table>
+      )}
     </div>
   );
 };

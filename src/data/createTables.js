@@ -19,8 +19,7 @@ const createTables = async () => {
       heard_id TEXT NOT NULL,
       heard_count INTEGER NOT NULL,
       owner_national_id VARCHAR(50) NOT NULL,
-      created_at TIMESTAMP DEFAULT NOW(),
-      FOREIGN KEY (owner_national_id) REFERENCES farmers(national_id) ON DELETE CASCADE
+      created_at TIMESTAMP DEFAULT NOW()
     );
   `;
 

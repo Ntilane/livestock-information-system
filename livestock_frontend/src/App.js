@@ -5,6 +5,7 @@ import Register from './pages/Register/Register';
 import HomePage from './pages/Homepage/HomePage';
 import UserProfile from './pages/UserProfile/UserProfile';
 import AdminDashboard from './pages/AdminDashboard/AdminDashboard';
+import AddSheepForm from './pages/Admin/AddSheepForm';
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/admin" element={<AdminDashboard />} />
-        {/* You can add more routes like /users or /manage-herds later */}
+        <Route path="/addSheeps" element={<AddSheepForm />} />
       </Routes>
     </Router>
   );
